@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shayar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main">
+<h1 style="text-align: center; color: black;">Shayari App</h1>
+<div style="width: 20%; margin: 10vh auto 0 auto;">
+    <select id="selectLanguage">
+        <option value="english">English</option>
+        <option value="hindi">Hindi</option>
+    </select>
+    <button style="width: 10vw;border-radius:10px; border: 1px transparent;" onclick="getData()">Get Shayri</button>
+    <br>
+   
+</div>
+<div id="result" style="width: 70%; margin:3vh  auto 0 auto; border: 1px solid black ; height: 60vh; overflow-y: scroll; border-radius:10px ; display: flex; justify-content: center; align-items: center;"></div>
+
+
+</div>
+
+
+    <script>
+
+var language="English";
+let languageVal=document.getElementById("selectLanguage");
+languageVal.addEventListener("change",()=>{
+    language=languageVal.value;
+    console.log(language)
+})
+
+
+
+
+        function getData() {
+        
+            const apiUrl = `http://localhost:8080/chat?prompt=Generate some shayri in ${language} of two lines only`;
+
+            fetch(apiUrl, {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+              
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = JSON.stringify(data.message.content.split("\n"), null, 2);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+    </script>
+</body>
+</html>
