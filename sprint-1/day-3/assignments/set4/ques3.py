@@ -19,3 +19,4 @@ def longest_common_prefix(strs):
 input_strings = ["flower", "flow", "flight"]
 result = longest_common_prefix(input_strings)
 print(result)  
+
