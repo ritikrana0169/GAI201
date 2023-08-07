@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Pretzels",
+        "price": 1.0,
+        "availability": false
+    },
+    {
+        "name": "Popcorn",
+        "price": 2.0,
+        "availability": true
+    }
+]
