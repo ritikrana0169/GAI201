@@ -113,6 +113,40 @@ def updateAvailability():
 
 
 
+def buySnack():
+    file_path = "snacks.json"
+
+    try:
+        with open(file_path, "r") as json_file:
+            snacks_data = json.load(json_file)
+    except FileNotFoundError:
+        snacks_data = []
+
+    name_to_buy = input("Enter the name of the snack you want to buy: ")
+
+    snack_found = False
+    for snack in snacks_data:
+        if snack["name"] == name_to_buy:
+            if snack["availability"]:
+                print(f"You have bought '{name_to_buy}'. Enjoy!")
+                snack["availability"] = False
+            else:
+                print(f"'{name_to_buy}' is currently not available.")
+            snack_found = True
+            break
+
+    if not snack_found:
+        print(f"No snack with the name '{name_to_buy}' found.")
+
+    with open(file_path, "w") as json_file:
+        json.dump(snacks_data, json_file, indent=4)
+
+
+
+
+
+
+
 
 
 def main():
@@ -133,7 +167,8 @@ def main():
        print("\n==========Update Snacks========")
        updateAvailability()
     elif opt==5:
-       print("five")
+       print("\n==========Buy Snack===========")
+       buySnack()
     elif opt==6:
        print("Thank You For The Visit")
        break
