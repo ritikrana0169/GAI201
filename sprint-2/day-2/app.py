@@ -1,41 +1,149 @@
 import json
 
 def displayMenu():
-    with open("menu.json", "r") as file:
-        menu_data = json.load(file)
+    file_path = "menu.json"
 
-    print("Menu:")
-    print("Dish Name\tPrice\tAvailability")
-    print("--------------------------------")
+    try:
+        with open(file_path, "r") as json_file:
+            snacks_data = json.load(json_file)
+    except FileNotFoundError:
+        snacks_data = []
 
-    for dish in menu_data:
-        availability = "Available" if dish["availability"] else "Not Available"
-        print(f"{dish['dish_name']}\t\t{dish['price']}\t{availability}")
+    
+    for snack in snacks_data:
+        name = snack["dish_name"]
+        price = snack["price"]
+        availability = "yes" if snack["availability"] else "no"
 
-
-
-
-def remove_dish_by_name(self, dish_name):
-        removed_dish_id = None
-        for dish_id, dish in self.menu.items():
-            if dish.name.lower() == dish_name.lower():
-                removed_dish_id = dish_id
-                del self.menu[dish_id]
-                self._update_menu_json()
-                print(f"Dish '{dish_name}' removed successfully.")
-                break
-
-        if removed_dish_id is None:
-            print(f"Dish '{dish_name}' not found in the menu.")
+        print(f"name {name}  price = ${price} Availability = {availability}")
 
 
 
-def _update_menu_json(self):
-    menu_data = [{"dish_id": dish.dish_id, "name": dish.name, "price": dish.price, "availability": dish.availability}
-                    for dish in self.menu.values()]
 
-    with open("menu.json", "w") as file:
-            json.dump(menu_data, file, indent=4)
+import json
+
+def addNewSnack():
+    file_path = "menu.json"
+    try:
+        with open(file_path, "r") as json_file:
+            snacks_data = json.load(json_file)
+    except FileNotFoundError:
+        snacks_data = []
+
+    while True:
+        
+        name = input("Enter Dish name (or type 'exit' to stop adding): ")
+        if name.lower() == "exit":
+            break
+
+        price = float(input("Enter Dish price: "))
+        availability = input("Is the DISH available (yes/no): ").lower() == "yes"
+
+        
+        new_snack = {
+            "dish_name": name,
+            "price": price,
+            "availability": availability
+        }
+
+        
+        snacks_data.append(new_snack)
+
+    
+    with open(file_path, "w") as json_file:
+        json.dump(snacks_data, json_file, indent=4)
+
+
+
+ 
+
+
+def  remove_dish_by_name():
+    file_path = "menu.json"
+    try:
+        with open(file_path, "r") as json_file:
+            snacks_data = json.load(json_file)
+    except FileNotFoundError:
+        snacks_data = []
+
+    name_to_remove = input("Enter the name of the dish to remove: ")
+    removed_snacks = [snack for snack in snacks_data if snack["dish_name"] != name_to_remove]
+
+    if len(removed_snacks) == len(snacks_data):
+        print(f"No snack with the name '{name_to_remove}' found.")
+        return
+    with open(file_path, "w") as json_file:
+        json.dump(removed_snacks, json_file, indent=4)
+
+    print(f"dish '{name_to_remove}' has been removed.")
+
+
+
+
+
+def updateAvailability():
+    file_path = "menu.json"
+    try:
+        with open(file_path, "r") as json_file:
+            snacks_data = json.load(json_file)
+    except FileNotFoundError:
+        snacks_data = []
+
+    name_to_update = input("Enter the name of the dish to update availability: ")
+
+    
+    snack_updated = False
+    for snack in snacks_data:
+        if snack["dish_name"] == name_to_update:
+            snack["availability"] = not snack["availability"]
+            snack_updated = True
+            break
+
+    if not snack_updated:
+        print(f"No dish with the name '{name_to_update}' found.")
+        return
+
+    with open(file_path, "w") as json_file:
+        json.dump(snacks_data, json_file, indent=4)
+
+    print(f"Availability of dish '{name_to_update}' has been updated.")
+
+
+
+
+
+
+def buySnack():
+    file_path = "menu.json"
+
+    try:
+        with open(file_path, "r") as json_file:
+            snacks_data = json.load(json_file)
+    except FileNotFoundError:
+        snacks_data = []
+
+    name_to_buy = input("Enter the name of the dish you want to buy: ")
+
+    snack_found = False
+    for snack in snacks_data:
+        if snack["dish_name"] == name_to_buy:
+            if snack["availability"]:
+                print(f"You have bought '{name_to_buy}'. Enjoy!")
+                snack["availability"] = False
+            else:
+                print(f"'{name_to_buy}' is currently not available.")
+            snack_found = True
+            break
+
+    if not snack_found:
+        print(f"No dish with the name '{name_to_buy}' found.")
+
+    with open(file_path, "w") as json_file:
+        json.dump(snacks_data, json_file, indent=4)
+
+
+
+
 
 
 
@@ -60,14 +168,15 @@ def main():
             print("\nMENU")
             displayMenu()
         elif choice == '1':
+            addNewSnack
             # Implement adding a new dish
             pass
         elif choice == '2':
             print("/nREMOVE DISH")
-            dishName=str(input("Enter dish name to remove dish:"))
-            remove_dish_by_name(dishName)
+            remove_dish_by_name()
             pass
         elif choice == '3':
+            updateAvailability()
             # Implement updating dish availability
             pass
         elif choice == '4':

@@ -1,10 +1,5 @@
 [
     {
-        "dish_name": "Dish 1",
-        "price": 10.99,
-        "availability": true
-    },
-    {
         "dish_name": "Dish 2",
         "price": 15.99,
         "availability": false
