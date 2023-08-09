@@ -7,6 +7,11 @@
     {
         "name": "Popcorn",
         "price": 2.0,
-        "availability": false
+        "availability": true
+    },
+    {
+        "name": "namkeen",
+        "price": 22.0,
+        "availability": true
     }
 ]
