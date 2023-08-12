@@ -1,0 +1,192 @@
+// find the ride with the highest and lowest fare.
+
+db.rides.find().sort({ fare: -1 }).limit(1)
+
+
+// find the average fare and distance for each driver_id.
+
+db.rides.aggregate([
+  {
+    $group: {
+      _id: "$driver_id",
+      avgFare: { $avg: "$fare" },
+      avgDistance: { $avg: "$distance" }
+    }
+  }
+])
+
+
+
+// find driver_id that have completed more than 5 rides.
+
+db.rides.aggregate([
+  {
+    $group: {
+      _id: "$driver_id",
+      rideCount: { $sum: 1 }
+    }
+  },
+  {
+    $match: {
+      rideCount: { $gt: 5 }
+    }
+  }
+])
+
+
+
+// Assuming there is another collection/table called Drivers with driver_id and name fields, write a query to find the name of the driver with the highest fare.
+
+db.rides.aggregate([
+  {
+    $group: {
+      _id: "$driver_id",
+      totalFare: { $sum: "$fare" }
+    }
+  },
+  {
+    $sort: {
+      totalFare: -1
+    }
+  },
+  {
+    $limit: 1
+  },
+  {
+    $lookup: {
+      from: "Drivers", // Name of the Drivers collection
+      localField: "_id",
+      foreignField: "driver_id",
+      as: "driverInfo"
+    }
+  },
+  {
+    $unwind: "$driverInfo"
+  },
+  {
+    $project: {
+      _id: 0,
+      driverName: "$driverInfo.name",
+      totalFare: 1
+    }
+  }
+])
+
+
+
+
+// find the top 3 drivers who have earned the most from fares. Return the drivers' ids and total earnings.
+
+db.rides.aggregate([
+  {
+    $group: {
+      _id: "$driver_id",
+      totalEarnings: { $sum: "$fare" }
+    }
+  },
+  {
+    $sort: {
+      totalEarnings: -1
+    }
+  },
+  {
+    $limit: 3
+  },
+  {
+    $project: {
+      _id: 0,
+      driver_id: "$_id",
+      totalEarnings: 1
+    }
+  }
+])
+
+
+
+
+
+// Assuming there's a ride_date field of date type in the Rides table / collection, write a query to find all rides that happened in the last 7 days.
+
+const currentDate = new Date();
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(currentDate.getDate() - 7);
+
+db.rides.find({
+  ride_date: {
+    $gte: sevenDaysAgo,
+    $lt: currentDate
+  }
+})
+
+
+
+//Write a query to find all rides where the end_location is not set.
+
+db.rides.find({
+  end_location: { $exists: false }
+})
+
+
+
+
+// calculate the fare per mile for each ride and return the ride ids and their fare per mile, ordered by fare per mile in descending order.
+
+db.rides.aggregate([
+  {
+    $addFields: {
+      farePerMile: { $divide: ["$fare", "$distance"] }
+    }
+  },
+  {
+    $sort: {
+      farePerMile: -1
+    }
+  },
+  {
+    $project: {
+      _id: 1,
+      farePerMile: 1
+    }
+  }
+])
+
+
+
+// Assuming there's another collection/table Passengers with passenger_id and name fields, write a query to return a list of all rides including the driver's name and passenger's name.
+
+db.rides.aggregate([
+  {
+    $lookup: {
+      from: "Drivers", // Name of the Drivers collection
+      localField: "driver_id",
+      foreignField: "driver_id",
+      as: "driverInfo"
+    }
+  },
+  {
+    $lookup: {
+      from: "Passengers", // Name of the Passengers collection
+      localField: "passenger_id",
+      foreignField: "passenger_id",
+      as: "passengerInfo"
+    }
+  },
+  {
+    $unwind: "$driverInfo"
+  },
+  {
+    $unwind: "$passengerInfo"
+  },
+  {
+    $project: {
+      _id: 1,
+      driverName: "$driverInfo.name",
+      passengerName: "$passengerInfo.name"
+    }
+  }
+])
+
+
+// Write a query to add a tip field to the Rides table / collection.
+
+db.rides.updateMany({}, { $set: { tip: 0 } })

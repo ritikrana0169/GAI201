@@ -1,0 +1,125 @@
+// selected the desired database
+use Mydb
+
+// Create the customer collection
+ db.createCollection("Customers")
+ 
+ //Create the Customers Collection with Specified Fields
+  db.createCollection("Customers", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "name", "email", "address", "phone_number"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        name: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        email: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        address: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        phone_number: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        }
+      }
+    }
+  }
+})
+
+// Insert five documents into the Customers collection
+db.Customers.insertMany([
+  {
+    id: "1",
+    name: "Radhe",
+    email: "radhe122@gmail.com",
+    address: "123 Main St, City",
+    phone_number: "123-456-7890"
+  },
+  {
+    id: "2",
+    name: "Rahul baba",
+    email: "Rahul123@gmail.com",
+    address: "456 Elm St, Town",
+    phone_number: "987-654-3210"
+  },
+  {
+    id: "3",
+    name: "Michael Johnson",
+    email: "michael@example.com",
+    address: "789 Oak Ave, Village",
+    phone_number: "555-123-4567"
+  },
+  {
+    id: "4",
+    name: "Emily Brown",
+    email: "emily@example.com",
+    address: "567 Pine Rd, Suburb",
+    phone_number: "222-888-9999"
+  },
+  {
+    id: "5",
+    name: "Daniel Wilson",
+    email: "daniel@example.com",
+    address: "890 Maple Ln, Country",
+    phone_number: "333-777-5555"
+  }
+])
+
+// Fetch all data from the Customers collection
+db.Customers.find()
+
+// // Fetch only the name and email fields for all customers
+ db.Customers.find({}, { name: 1, email: 1, _id: 0 })
+
+// // Fetch the customer with id 3
+ db.Customers.findOne({ id: "3" })
+
+// // Fetch all customers whose name starts with 'A'
+ db.Customers.find({ name: { $regex: '^A', $options: 'i' } })
+
+// // Fetch all customers, ordered by name in descending order
+ db.Customers.find().sort({ name: -1 })
+
+// // Update the address of the customer with id 4
+ db.Customers.updateOne({ id: "4" }, { $set: { address: "Ardhali Bazar varanasi" } })
+
+// // Fetch the top 3 customers when ordered by id in ascending order
+ db.Customers.find().sort({ id: 1 }).limit(3)
+
+// // Delete the customer with id 2
+ db.Customers.deleteOne({ id: "2" })
+
+// Fetch only the name and email fields for all customers
+db.Customers.find({}, { name: 1, email: 1, _id: 0 })
+
+// Count the number of customers
+const customerCount = db.Customers.countDocuments()
+print(`Total number of customers: ${customerCount}`)
+
+// Fetch all customers except the first two when ordered by id in ascending order
+db.Customers.find().sort({ id: 1 }).skip(2)
+
+// Fetch all customers whose id is greater than 2 and name starts with 'B'
+db.Customers.find({
+  id: { $gt: "2" },
+  name: { $regex: '^B', $options: 'i' }
+})
+
+// Fetch all customers whose id is less than 3 or name ends with 's'
+db.Customers.find({
+  $or: [
+    { id: { $lt: "3" } },
+    { name: { $regex: 's$', $options: 'i' } }
+  ]
+})  
+

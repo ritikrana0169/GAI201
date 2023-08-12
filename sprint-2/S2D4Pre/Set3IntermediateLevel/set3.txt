@@ -1,0 +1,123 @@
+// show databses
+show dbs
+// create and use database 
+use mydb
+
+
+// Create a Rides collection with the fields defined above.
+db.rides.insertOne({
+  driver_id: ObjectId(),
+  passenger_id: ObjectId(),
+  start_location: "Start City",
+  end_location: "End City",
+  distance: 10,
+  ride_time: 30,
+  fare: 20
+})
+
+//Insert five documents into the Rides collection with data of your choice.
+db.rides.insertMany([
+  {
+    driver_id: ObjectId(),
+    passenger_id: ObjectId(),
+    start_location: "City A",
+    end_location: "City B",
+    distance: 8,
+    ride_time: 25,
+    fare: 15
+  },
+  {
+    driver_id: ObjectId(),
+    passenger_id: ObjectId(),
+    start_location: "City C",
+    end_location: "City D",
+    distance: 12,
+    ride_time: 40,
+    fare: 22
+  },
+  {
+    driver_id: ObjectId(),
+    passenger_id: ObjectId(),
+    start_location: "City A",
+    end_location: "City C",
+    distance: 5,
+    ride_time: 18,
+    fare: 10
+  },
+  {
+    driver_id: ObjectId(),
+    passenger_id: ObjectId(),
+    start_location: "City B",
+    end_location: "City D",
+    distance: 10,
+    ride_time: 30,
+    fare: 20
+  },
+  {
+    driver_id: ObjectId(),
+    passenger_id: ObjectId(),
+    start_location: "City C",
+    end_location: "City B",
+    distance: 7,
+    ride_time: 22,
+    fare: 12
+  }
+])
+
+// fetch all rides, ordered by fare in descending order.
+db.rides.find().sort({ fare: -1 })
+
+// calculate the total **`distance`** and total **`fare`** for all rides.
+db.rides.aggregate([
+  {
+    $group: {
+      _id: null,
+      totalDistance: { $sum: "$distance" },
+      totalFare: { $sum: "$fare" }
+    }
+  }
+])
+
+// fetch all rides whose start_location or end_location contains 'Downtown'.
+db.rides.find({
+  $or: [
+    { start_location: { $regex: 'Downtown', $options: 'i' } },
+    { end_location: { $regex: 'Downtown', $options: 'i' } }
+  ]
+})
+
+// count the number of rides for a given **`driver_id`**.
+const givenDriverId = ObjectId("your_driver_id_here");
+
+const rideCount = db.rides.countDocuments({ driver_id: givenDriverId });
+
+print("Number of rides for the given driver_id:", rideCount);
+
+// update the fare of the ride with id 4.
+const rideIdToUpdate = ObjectId("your_ride_id_here");
+const newFareValue = 25; 
+
+db.rides.updateOne(
+  { _id: rideIdToUpdate },
+  { $set: { fare: newFareValue } }
+);
+
+// Write a query to calculate the total fare for each driver_id.
+db.rides.aggregate([
+  {
+    $group: {
+      _id: "$driver_id",
+      totalFare: { $sum: "$fare" }
+    }
+  }
+])
+
+// delete the ride with id 2.
+const rideIdToDelete = ObjectId("your_ride_id_here"); 
+
+db.rides.deleteOne({ _id: rideIdToDelete });
+
+
+
+
+

@@ -1,0 +1,132 @@
+use mydb
+
+// Create the Restaurants Collection:
+db.createCollection("Restaurants", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "cuisine_type", "location", "average_rating", "delivery_available"],
+      properties: {
+        name: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        cuisine_type: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        location: {
+          bsonType: "string",
+          description: "must be a string and is required"
+        },
+        average_rating: {
+          bsonType: "double",
+          description: "must be a double and is required"
+        },
+        delivery_available: {
+          bsonType: "bool",
+          description: "must be a boolean and is required"
+        }
+      }
+    }
+  }
+})
+
+// Insert five documents into the Restaurants collection
+db.Restaurants.insertMany([
+  {
+    name: "Italian Delights",
+    cuisine_type: "Italian",
+    location: "123 Pasta Ave, City",
+    average_rating: 4.7,
+    delivery_available: true
+  },
+  {
+    name: "Sizzling Szechuan",
+    cuisine_type: "Chinese",
+    location: "456 Wok St, Town",
+    average_rating: 4.2,
+    delivery_available: true
+  },
+  {
+    name: "Taco Haven",
+    cuisine_type: "Mexican",
+    location: "789 Guacamole Rd, Village",
+    average_rating: 4.5,
+    delivery_available: true
+  },
+  {
+    name: "Burger Bliss",
+    cuisine_type: "American",
+    location: "567 Burger Blvd, Suburb",
+    average_rating: 4.8,
+    delivery_available: true
+  },
+  {
+    name: "Curry Corner",
+    cuisine_type: "Indian",
+    location: "890 Spice Lane, Country",
+    average_rating: 4.3,
+    delivery_available: true
+  },
+  {
+    name: "Dosa Delights",
+    cuisine_type: "South Indian",
+    location: "456 Idli St, Town",
+    average_rating: 4.6,
+    delivery_available: true
+  },
+  {
+    name: "Paneer Paradise",
+    cuisine_type: "North Indian",
+    location: "789 Roti Rd, Village",
+    average_rating: 4.4,
+    delivery_available: true
+  }
+])
+
+// Fetch all restaurants, ordered by average_rating in descending order
+db.Restaurants.find().sort({ average_rating: -1 })
+
+// Fetch all restaurants with delivery_available and average_rating > 4
+db.Restaurants.find({
+  $and: [
+    { delivery_available: true },
+    { average_rating: { $gt: 4 } }
+  ]
+})
+
+
+// fetch all restaurants where the cuisine_type field is not set or is null.
+db.restaurants.find({
+  $or: [
+    { cuisine_type: { $exists: false } },
+    { cuisine_type: null }
+  ]
+});
+
+// count the number of restaurants that have delivery_available.
+db.restaurants.count({ delivery_available: true });
+
+//fetch all restaurants whose location contains 'Spice'.
+db.restaurants.count({ delivery_available: true });
+
+//calculate the average average_rating of all restaurants.
+db.restaurants.aggregate([
+  {
+    $group: {
+      _id: null,
+      averageAverageRating: { $avg: "$average_rating" }
+    }
+  }
+]);
+
+// fetch the top 5 restaurants when ordered by average_rating in descending order.
+db.restaurants.find().sort({ average_rating: -1 }).limit(5);
+
+// delete the restaurant with id 3.
+db.restaurants.deleteOne({ _id: 3 });
+
+
+
+
