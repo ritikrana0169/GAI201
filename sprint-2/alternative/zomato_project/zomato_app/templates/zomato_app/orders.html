@@ -1,0 +1,29 @@
+{% extends 'zomato_app/base.html' %}
+
+{% block content %}
+<h2>Orders</h2>
+<ul>
+    {% for order in orders_list %}
+    <li>
+        Customer: {{ order.customer_name }}<br>
+        Dishes:
+        <ul>
+            {% for dish_id in order.dish_ids %}
+                <li>{{ menu_items|index:dish_id }} - ${{ menu_items|index:dish_id }.price }}</li>
+            {% endfor %}
+        </ul>
+        Status: {{ order.status }}<br>
+        <form method="post" action="{% url 'update_order' order.id %}">
+            {% csrf_token %}
+            <label for="status">Update Status:</label>
+            <select id="status" name="status">
+                <option value="received">Received</option>
+                <option value="preparing">Preparing</option>
+                <option value="completed">Completed</option>
+            </select>
+            <button type="submit">Update Status</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

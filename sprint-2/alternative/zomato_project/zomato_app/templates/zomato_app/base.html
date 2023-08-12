@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zesty Zomato</title>
+</head>
+<body>
+    <h1>Zesty Zomato</h1>
+    <nav>
+        <a href="{% url 'menu' %}">Menu</a>
+        <a href="{% url 'orders' %}">Orders</a>
+    </nav>
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>
