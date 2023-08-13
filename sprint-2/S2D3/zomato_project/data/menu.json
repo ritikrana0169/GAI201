@@ -1,0 +1,4 @@
+[
+    {"dish_id": 1, "dish_name": "Pasta", "price": 10.99, "is_available": true},
+    {"dish_id": 2, "dish_name": "Burger", "price": 7.99, "is_available": true}
+]
