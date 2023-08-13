@@ -16,7 +16,7 @@ def menu(request):
 
 def orders(request):
     return render(request, 'zomato_app/orders.html', {'orders': orders})
-
+ 
 def add_dish(request):
     if request.method == 'POST':
         dish_id = int(request.POST.get('dish_id'))
