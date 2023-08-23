@@ -6,6 +6,3 @@ Genrative AI
 
 
 
-
-
-
