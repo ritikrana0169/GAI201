@@ -1,2 +1,2 @@
 # GAI201
-Genrative AI 
+Genrative AI
