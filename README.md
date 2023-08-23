@@ -7,8 +7,3 @@ Genrative AI
 
 
 
-
-
-
-
-
